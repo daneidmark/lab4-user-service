@@ -77,8 +77,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             Öppna https://jwt.io/ och pasta in er token
             Kolla på resultatet.
          */
-
-        res.getWriter().write("Du är inloggad!");
+        User user = (User) auth.getPrincipal();
+        res.getWriter().write(jwtIssuer.generateToken(user));
         res.getWriter().flush();
 
 

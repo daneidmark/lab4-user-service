@@ -45,7 +45,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         String token = request.getHeader("Authorization");
         LOG.info("Försöker att logga in: {}", token);
         if (token != null) {
-            User user = null;
+            User user = jwtIssuer.validate(token.substring(7));
             /*
                 TODO: uppgift 5
                 Vi har nu fått in vår token och vi vill validera så att den är valid samt titta i den för

@@ -1,6 +1,10 @@
 package se.nackademin.backend2.user;
 
 import org.junit.jupiter.api.Test;
+import se.nackademin.backend2.user.domain.User;
+import se.nackademin.backend2.user.security.JWTIssuer;
+
+import java.util.Base64;
 
 class JWTIssuerTest {
 

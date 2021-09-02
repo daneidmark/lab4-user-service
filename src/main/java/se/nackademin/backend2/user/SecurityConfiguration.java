@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import se.nackademin.backend2.user.security.JWTAuthenticationFilter;
@@ -54,7 +56,8 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     200 ok! perfekt men jag får inget svar tillbaka?
                     Kolla i loggarna, vi får ett läskigt fel som vi ska se till att lösa i uppgift 2
                  */
-                .antMatchers("/swagger-ui/*", "/swagger-ui.html", "/webjars/**", "/v2/**", "/swagger-resources/**").permitAll()
+                .antMatchers("/user/*").permitAll()
+                .antMatchers( "/swagger-ui/*", "/swagger-ui.html", "/webjars/**", "/v2/**", "/swagger-resources/**").permitAll()
                 /*
                 TODO: Upppgift 4:
                     Arbeta med roller
@@ -85,6 +88,8 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                    Tror det är dags att leta efter uppgift 5.
                  */
+                .antMatchers("/admin/*").hasRole("ADMIN")
+                .antMatchers("/customer/*").hasRole("CUSTOMER")
                 .anyRequest().authenticated().and()
                 .addFilter(filter)
                 .addFilter(jwtAuthorizationFilter)
@@ -117,7 +122,9 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                 Du ska få "Du är inloggad!" som svar.
          */
-        auth.userDetailsService((s) -> null);
+
+        auth.userDetailsService((username) -> userRepo.findById(username).orElseThrow(() -> new UsernameNotFoundException(":(")))
+                .passwordEncoder(passwordEncoder);
     }
 
 }
